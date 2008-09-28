@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
   #platform = "xiaonei"
      
   #require  "platform/#{platform}.rb"
-  acts_as_xiaonei_controller
+  acts_as_wuyao_controller
   
       before_filter :set_current_user
    
