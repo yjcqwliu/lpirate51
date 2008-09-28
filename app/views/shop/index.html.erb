@@ -1,0 +1,16 @@
+<h4>海盗商店</h4>
+
+<div>
+
+
+<% for ship in @ships %>
+ <div style="float:left;width:180px;text-align:center">
+        <img src="<%=h ship.img_url %>" border="0" title="价格:<%=h ship.price %>  <%=h ship.intro %>"><br>
+	<%=h ship.name %>	<br>
+	价格：<%=h ship.price %>	<br>
+    <%= link_to "购买",:controller => :shop,:action => :buy ,:id => ship.id %>
+</div>
+<% end %>
+</div>
+
+

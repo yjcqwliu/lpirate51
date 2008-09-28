@@ -48,8 +48,8 @@ Rails::Initializer.run do |config|
   # Make sure the secret is at least 30 characters and all random, 
   # no regular words or you'll be exposed to dictionary attacks.
   config.action_controller.session = {
-    :session_key => '_test_session',
-    :secret      => 'b754f707e01e62d88776ddd1567689fe5b77b537683d7dc6e65f553f73ceb48178d2dc54b7a2dfba796447165534392828ad8c907f9a5436ede13df4cde5eb00'
+    :session_key => '_lpirate_session',
+    :secret      => '182f6f7a11927b429588144825d5ba89ca19debeb91ac521452c3294bd9d8748229e3bb7ac54e7091918cfe4469a0fadfde6ad71a70974f5a178a85c15a80694'
   }
 
   # Use the database for sessions instead of the cookie-based default,

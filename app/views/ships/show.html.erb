@@ -1,0 +1,38 @@
+<p>
+  <b>Name:</b>
+  <%=h @ship.name %>
+</p>
+
+<p>
+  <b>Attack:</b>
+  <%=h @ship.attack %>
+</p>
+
+<p>
+  <b>Capacity:</b>
+  <%=h @ship.capacity %>
+</p>
+
+<p>
+  <b>Robspeed:</b>
+  <%=h @ship.robspeed %>
+</p>
+
+<p>
+  <b>price:</b>
+  <%=h @ship.price %>
+</p>
+
+<p>
+  <b>Img url:</b>
+  <img src="<%=h @ship.img_url %>">
+</p>
+
+<p>
+  <b>Intro:</b>
+  <%=h @ship.intro %>
+</p>
+
+
+<%= link_to 'Edit', edit_ship_path(@ship) %> |
+<%= link_to 'Back', ships_path %>
