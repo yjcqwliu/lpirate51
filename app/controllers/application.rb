@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
   # Uncomment this to filter the contents of submitted sensitive data parameters
   # from your application log (in this case, all fields with names like "password"). 
   # filter_parameter_logging :password
-  #platform = "xiaonei"
+  #platform = "wuyao"
      
   #require  "platform/#{platform}.rb"
   acts_as_wuyao_controller
@@ -22,19 +22,20 @@ class ApplicationController < ActionController::Base
    
 
   def set_current_user
+      @platform="xn"
 	  if params[:controller] != "ships" then
 			if @current_user.nil?
-			  @current_user = User.login(xiaonei_session.user.to_i)
+			  @current_user = User.login(wuyao_session.user)
 			  
-			  if @current_user.session_key != xiaonei_session.session_key
-			  @current_user.session_key = xiaonei_session.session_key
+			  if @current_user.session_key != wuyao_session.session_key
+			  @current_user.session_key = wuyao_session.session_key
 			   @current_user.save
 			  end
 			end
 			if @current_user.friend_ids.nil? or @current_user.friend_ids.size == 0 or @current_user.updated_at > (Time.now - 48.hour)
-				res = xiaonei_session.invoke_method("xiaonei.friends.get")
+				res = wuyao_session.invoke_method("fiveone.friends.get")
 				#pp("===========res:#{res.inspect}=============")
-			   if res.kind_of? Xiaonei::Error
+			   if res.kind_of? Wuyao::Error
 				  @current_user.friend_ids = [] if @current_user.friend_ids.empty?
 				else
 				  @current_user.friend_ids = res
@@ -75,7 +76,7 @@ class ApplicationController < ActionController::Base
         feilds.each do |key,value|
 	     path += "#{key}=#{URI.escape(value)}&"
         end
-    render :text => "<xn:redirect url=\"#{path}\"/>"
+    render :text => "<fo:redirect url=\"#{path}\"/>"
 	#render :text => "你没有权限操作"
   end
 

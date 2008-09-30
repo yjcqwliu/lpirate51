@@ -15,7 +15,7 @@
 }
 #friendlist {
 float:right;
-width:160px;
+width:60px;
 height:300px;
 overflow:auto;
 }
@@ -156,7 +156,7 @@ text-align:right;
 <h4>海盗好友</h4>
 <% @current_user.friend_ids.each do |friend| %>
 <div>
-<a href="http://apps.xiaonei.com/lpirate/home/index/<%= friend%>" target="_top"><xn:name uid="<%= friend %>" /></a>
+<a href="http://apps.xiaonei.com/lpirate/home/index/<%= friend%>" target="_top"><%= (Ml.new).name({"uid" => friend}) %></a>
 </div>
 <% end %>
 </div>

@@ -1,8 +1,0 @@
---- 
-cwd: "/u/apps/lpirate/current"
-environment: production
-log_file: log/mongrel.log
-port: "3333"
-address: 58.215.65.224
-pid_file: tmp/pids/mongrel.pid
-servers: 1
