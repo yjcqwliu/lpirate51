@@ -2,7 +2,7 @@
 #   gem install sqlite3-ruby (not necessary on OS X Leopard)
 production:
   adapter: mysql
-  database: lpirate_production
+  database: lpirate51_production
   host: localhost
   username: lpirate
   password: as20s@sx92

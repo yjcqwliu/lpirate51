@@ -1,10 +1,10 @@
 require 'mongrel_cluster/recipes'
 
-set :application, "lpirate"
+set :application, "lpirate51"
 set :scm, "git"
 set :repository,  "git@github.com:yjcqwliu/lpirate.git"
 set :branch, "master"
-set :user, "lpirate"
+set :user, "lpirate51"
 set :use_sudo, false
 set :mongrel_conf, "#{current_path}/config/mongrel_cluster.yml"
 

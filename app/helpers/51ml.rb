@@ -4,6 +4,6 @@ def name(attribute)
    attribute.each do |key,value| 
       ml += "#{key}=\"#{value}\" "
    end
-   ml += "/>51"
+   ml += "/>"
 end
 end
