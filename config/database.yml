@@ -2,10 +2,10 @@
 #   gem install sqlite3-ruby (not necessary on OS X Leopard)
 development:
   adapter: mysql
-  database: lpirate51
+  database: lpirate51_production
   host: localhost
   username: root
-  password:
+  password: ue843,.wd
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
