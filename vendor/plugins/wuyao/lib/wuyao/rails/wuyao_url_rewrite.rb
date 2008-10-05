@@ -1,7 +1,7 @@
 module ::ActionController
   class AbstractRequest                         
     def relative_url_root
-      wuyao.path_prefix
+      Wuyao.path_prefix
     end                                         
   end
   
@@ -18,11 +18,11 @@ module ::ActionController
       options = args.first.is_a?(Hash) ? args.first : args.last
       is_link_to_canvas = link_to_canvas?(@request.request_parameters, options)
       if is_link_to_canvas && !options.has_key?(:host) 
-        options[:host] = wuyao.canvas_server_base
+        options[:host] = Wuyao.canvas_server_base
       end 
       options.delete(:canvas)
 
-      wuyao.request_for_canvas(is_link_to_canvas) do
+      Wuyao.request_for_canvas(is_link_to_canvas) do
         rewrite_url_without_wuyao(*args)
       end
     end

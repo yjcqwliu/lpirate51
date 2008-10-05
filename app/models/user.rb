@@ -18,6 +18,7 @@ class User < ActiveRecord::Base
 	serialize :invite
 	
     has_many :usership
+	has_many :notice
 	
 	
 	
@@ -31,13 +32,13 @@ class User < ActiveRecord::Base
 		     user=user.first
 		end
 		#Ìí¼ÓÑûÇë×Ö¶Î
-		if invite != 0 
+		if invite != 0  && user.invite != 0
 			invite_array = user.invite || []
-			pp "-----------invite_array1:#{invite_array.inspect}------"
+			if !invite_array.include?(invite)			
 			invite_array.push(invite)
+			end
+			user.invite_will_change!
 			user.invite = invite_array
-			#user.invite ={:a =>"13241324",:b=>"2352452354",:c=>"352354"}
-			pp "-----------invite_array2:#{invite_array.inspect}------"
 			user.save
 		end
 		

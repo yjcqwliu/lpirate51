@@ -15,3 +15,7 @@ if File.exist?(wuyao_config)
 end
 
 ActionController::Base.send(:include,Wuyao::Rails::Controller) 
+
+# pull :canvas=> into env in routing to allow for conditions
+ActionController::Routing::RouteSet.send :include,  Wuyao::Rails::Routing::RouteSetExtensions
+ActionController::Routing::RouteSet::Mapper.send :include, Wuyao::Rails::Routing::MapperExtensions
