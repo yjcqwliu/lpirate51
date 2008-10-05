@@ -24,5 +24,5 @@ role :db,  "58.215.65.224", :primary => true
 
 task :after_update_code do 
   run "cp #{current_release}/config/database.yml.production #{current_release}/config/database.yml"
-  run "cp #{current_release}/config/xiaonei.yml.production #{current_release}/config/xiaonei.yml"
+  run "cp #{current_release}/config/wuyao.yml.production #{current_release}/config/wuyao.yml"
 end
