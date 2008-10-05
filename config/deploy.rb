@@ -2,7 +2,7 @@ require 'mongrel_cluster/recipes'
 
 set :application, "lpirate51"
 set :scm, "git"
-set :repository,  "git@github.com:yjcqwliu/lpirate.git"
+set :repository,  "git@github.com:yjcqwliu/lpirate51.git"
 set :branch, "master"
 set :user, "lpirate51"
 set :use_sudo, false
