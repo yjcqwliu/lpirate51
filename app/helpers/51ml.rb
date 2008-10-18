@@ -13,6 +13,46 @@ def userpic(attribute)
    end
    ml += "/>"
 end
+def if_is_app_user(attribute)
+   ml = "<fo:if-is-app-user  "
+   attribute.each do |key,value| 
+      ml += "#{key}=\"#{value}\" "
+   end
+   ml += ">"
+end
+
+def end_if_is_app_user()
+   ml = "</fo:if-is-app-user>"
+end
+
+def mlelse()
+   ml = "<fo:else>"
+end
+
+def end_mlelse()
+   ml = "</fo:else>"
+end
+
+def request_form(attribute)
+    ml = "<fo:request-form  "
+   attribute.each do |key,value| 
+      ml += "#{key}=\"#{value}\" "
+   end
+   ml += "/>"
+end
+
+def end_request_form()
+   ml = "</fo:request-form>"
+end
+
+def request_form_submit(attribute)
+   ml = "<fo:request-form-submit "
+   attribute.each do |key,value| 
+      ml += "#{key}=\"#{value}\" "
+   end
+   ml += "/>"
+end
+
 def image(imgcase)
    ml = "<img src=\""
    case imgcase 

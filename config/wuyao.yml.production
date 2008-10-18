@@ -1,5 +1,5 @@
 production:
   api_key: 027da628fcbce8e33c828f35a8ec9a7b
   secret_key: 3e1541ad3555e3c94156073316e3d701
-  canvas_page_name: lpirate51
+  canvas_page_name: lpirate
   callback_url: http://58.215.65.224:4080/
