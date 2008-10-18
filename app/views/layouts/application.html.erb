@@ -9,7 +9,7 @@
 	FLOAT: left; MARGIN-LEFT: -1px;
 }
 #sub-nav UL LI A {
-	BORDER-RIGHT: #898989 1px solid; PADDING-RIGHT: 1em; BORDER-TOP: #898989 1px solid; MIN-WIDTH: 60px; DISPLAY: block; PADDING-LEFT: 1em; BACKGROUND: url(/img/sub_tab.gif) #f1f1f1 repeat-x; PADDING-BOTTOM: 3px; BORDER-LEFT: #898989 1px solid; COLOR: #333; PADDING-TOP: 3px; BORDER-BOTTOM: #898989 0px solid; TEXT-ALIGN: center;
+	BORDER-RIGHT: #898989 1px solid; PADDING-RIGHT: 1em; BORDER-TOP: #898989 1px solid; MIN-WIDTH: 60px; DISPLAY: block; PADDING-LEFT: 1em; BACKGROUND:  #f1f1f1 repeat-x; PADDING-BOTTOM: 3px; BORDER-LEFT: #898989 1px solid; COLOR: #333; PADDING-TOP: 3px; BORDER-BOTTOM: #898989 0px solid; TEXT-ALIGN: center;
 }
 
 
@@ -33,12 +33,11 @@ text-align:right;
 <div id = "sub-nav" style = "height:21px; overflow:hidden;" >
 			<ul >
     <li ><%= link_to "我的岛屿",:controller => :home ,:action => :index %></li>
-    <li ><%= link_to "好友岛屿",:controller => :home ,:action => :friend %></li>
+    <li ><%= link_to "好友岛屿",:controller => :home ,:action => :friend,:id => nil %></li>
 	<li ><%= link_to "我的船只",:controller => :home ,:action => :myship %></li>
 	<li ><%= link_to "海盗商店",:controller => :shop ,:action => :index %></li>
-	<li ><%= link_to "邀请好友",:controller => :home ,:action => :invite %></li>
+	<li ><%= link_to "排行",:controller => :lorder ,:action => :index %></li>
 	<li ><%= link_to "游戏帮助",:controller => :home ,:action => :help %></li>
-	<li ><a href="http://group.xiaonei.com/GetThreadList.do?id=254748934&curpage=0&label=0" target="_blank">意见和建议</a></li>
 </ul>
 </div>
 <% #帮助系统开始
@@ -59,5 +58,5 @@ if @notice != nil and @notice != "" then %>
     </div>
   </div>
 <% end %>
-<div id="showgoldinfo">您的资产 金币：<%= @current_user.gold%>  海盗币：<%= @current_user.pgold%>  </div>
+<div id="showgoldinfo">您的资产 金币：<%= @current_user.gold%>  海盗币：<%= @current_user.pgold%>  今日贸易：<%= @current_user.business_count %>/<%= @current_user.business_top %></div>
 <%= yield -%>

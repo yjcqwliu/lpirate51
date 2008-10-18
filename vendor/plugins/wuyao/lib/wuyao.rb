@@ -11,7 +11,6 @@ require "wuyao/models/home"
 require "wuyao/models/error"
 
 module Wuyao
-
   class << self 
     def canvas_path
       ENV['WUYAO_RELATIVE_URL_ROOT'] 
@@ -38,8 +37,5 @@ module Wuyao
         @path_prefix = original_path_prefix
       end
     end
-    
   end
-  
 end
-

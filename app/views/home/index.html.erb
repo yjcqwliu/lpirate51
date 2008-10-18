@@ -1,7 +1,7 @@
 <% ml = Ml.new %>
 <style type="text/css">
 #mybody {
-	width: 620px;
+	width: 540px;
 	float:left;
 	padding: 5px;
 }
@@ -11,12 +11,12 @@
 }
 .dock {
 	float: left;
-	width:155px;
+	width:130px;
 	text-align:center;
 }
 #friendlist {
 float:right;
-width:160px;
+width:120px;
 height:300px;
 overflow:auto;
 }
@@ -35,7 +35,7 @@ height:25px;
 #mybody #noticelist #noticecontent {
 float:left;
 height:28px;
-width:500px;
+width:450px;
 }
 #myshipspan{
 	color:blue;
@@ -61,13 +61,31 @@ text-align:right;
 #mybody #noticelist #noticetime {
 float:right;
 }
+#notify
+{
+float:right;
+width:160px;
+height:100px;
+}
+#business_dock
+{
+border:2px solid #225599;
+float: left;
+width:151px;
+text-align:center;
+}
+.gorob{
+float:right;
+text-size:15px;
+}
 </style>
 
 <div>
 
 <div id="mybody">
-<div class="gotofriend"><a href="http://group.xiaonei.com/GetThread.do?id=327642436&curpage=0&tribeId=254748934" target="_blank"><span style="color:red" title="点击查看活动详情">参加“海盗总动员” 赢取紫豆</span></a>　　　　　　　　　　<%= link_to ">>去抢劫好友",:controller => :home ,:action => :friend  %></div>
-<div id="islandinfo"><xn:name uid="<%= @user.xid %>" />的小岛</div>
+<div class="gotofriend"></div>
+<div id="islandinfo"><%= ml.userpic("uid" => @user.xid,"linked"=>"true") %><%= ml.name("uid"=>@user.xid)%>的小岛<span class="gorob"><%= link_to ">>去抢劫好友",:controller => :home ,:action => :friend  %></span><br>
+<hr /></div>
 <div id="docklist">
 <div id="dock1" class="dock"><%= ml.image("dock") %><br>
 码头</div>
@@ -75,12 +93,40 @@ float:right;
 码头</div>
 <div id="dock3" class="dock"><%= ml.image("dock") %><br>
 码头</div>
-<div id="dock4" class="dock"><%= ml.image("dock") %><br>
-免费码头
-</div>
+<div id="business_dock" ><%= ml.image("dock") %><br>
+贸易码头<br>
+&nbsp;
+		<% if (@user.dock4 == nil or @user.dock4 == 0) and @current_user.xid != @user.xid-%>
+<fo:if-is-app-user uid="<%= @user.xid %>"> 
+<form action="business/business/<%= @user.id %>"> 
+ <%= submit_tag "贸易" , :name => "dock" ,:value => "贸易" %>
+</form>
+<fo:else>
+<fo:invite-form action="business/invite/<%= @user.id %>">
+  <input type="hidden" name="ids[]" value="<%= @user.xid %>"/>
+  <%= submit_tag "倒卖" , :name => "dock" ,:value => "倒卖" %>
+</fo:invite-form>
+
+</fo:else> 
+</fo:if-is-app-user>
+<%= link_to "换下一个",:controller=>:home,:action => :friend,:id=>nil %> 
+
+
+			 
+		<% else #别人正在抢 -%>
+			 <% if @user.dock4 and @user.dock4 > 0 -%>
+				 <% usership = Usership.find(@user.dock4) %>
+				 <%= usershipimg(usership)%><br>
+				<%= ml.image("small_skull") %><%= link_to ml.name({"uid"=>usership.user.xid}), :controller => :home , :action => :friend ,:id => usership.user.xid %>正停靠在该码头<br>
+				  <% if @current_user.xid == @user.xid %>
+					  <%= submit_tag "抢劫" , :name => "dock" ,:value => "赶跑TA" %>
+				 <% end %> 
+			 <% end %>
+		<% end -%>
+	</div>
 <div style="clear:both;"></div>
 </div>
-<form action="home/rob/<%= @user.id %>">
+<form action="/lpirate/home/rob/<%= @user.id %>">
 <div id="roblist">
 
 	<div  class="dock">
@@ -90,9 +136,9 @@ float:right;
 		<% else #别人正在抢 -%>
 			 <% if @user.dock1 and @user.dock1 > 0 -%>
 				 <% usership = Usership.find(@user.dock1) %>
-				 <img src="<%= usership.ship.img_url %>" title="价格:<%=h usership.ship.price %>  <%=h usership.ship.intro %>"><br>
-				 <img src="http://fmn001.xnimg.cn/fmn001/pic001/20080924/16/55/large_7Bq8_3172b198177.jpg"><%= link_to "<xn:name uid=\"#{usership.user.xid}\" />", :controller => :home , :action => :index ,:id => usership.user.xid %>正在该码头抢劫<br>
-				 已经掠夺了<%= conversion(Time.now - @user.dock1_time).to_i %>个金币
+				 <%= usershipimg(usership)%><br>
+				<%= ml.image("small_skull") %><%= link_to ml.name({"uid"=>usership.user.xid}), :controller => :home , :action => :friend ,:id => usership.user.xid %>正在该码头抢劫<br>
+				 已经掠夺了<%= conversion(Time.now - @user.dock1_time,usership.capacity,usership.robspeed).to_i %>个金币
 				 <% if @current_user.xid == @user.xid %>
 					  <%= submit_tag "抢劫" , :name => "dock" ,:value => "夺回码头1" %>
 				 <% end %> 
@@ -107,9 +153,9 @@ float:right;
 		<% else #别人正在抢 -%>
 			 <% if @user.dock2 and @user.dock2 > 0 -%>
 				 <% usership = Usership.find(@user.dock2) %>
-				 <img src="<%= usership.ship.img_url %>" title="价格:<%=h usership.ship.price %>  <%=h usership.ship.intro %>"><br>
-				 <%= ml.image("small_skull") %><%= link_to "<xn:name uid=\"#{usership.user.xid}\" />", :controller => :home , :action => :index ,:id => usership.user.xid %>正在该码头抢劫<br>
-				 <% if @user.dock2_time %>已经掠夺了<%= conversion(Time.now - @user.dock2_time).to_i %>个金币<% end %>
+				 <%= usershipimg(usership)%><br>
+				 <%= ml.image("small_skull") %><%= link_to ml.name({"uid"=>usership.user.xid}), :controller => :home , :action => :friend ,:id => usership.user.xid %>正在该码头抢劫<br>
+				 <% if @user.dock2_time %>已经掠夺了<%= conversion(Time.now - @user.dock2_time,usership.capacity,usership.robspeed).to_i %>个金币<% end %>
 				  <% if @current_user.xid == @user.xid %>
 					  <%= submit_tag "抢劫" , :name => "dock" ,:value => "夺回码头2" %>
 				 <% end %>
@@ -124,9 +170,9 @@ float:right;
 		<% else #别人正在抢 -%>
 			 <% if @user.dock3 and @user.dock3 > 0 -%>
 				 <% usership = Usership.find(@user.dock3) %>
-				 <img src="<%= usership.ship.img_url %>" title="价格:<%=h usership.ship.price %>  <%=h usership.ship.intro %>"><br>
-				 <img src="http://fmn001.xnimg.cn/fmn001/pic001/20080924/16/55/large_7Bq8_3172b198177.jpg"><%= link_to "<xn:name uid=\"#{usership.user.xid}\" />", :controller => :home , :action => :index ,:id => usership.user.xid %>正在该码头抢劫<br>
-				 <% if @user.dock3_time %>已经掠夺了<%= conversion(Time.now - @user.dock3_time).to_i %>个金币<% end %>
+				 <%= usershipimg(usership)%><br>
+				<%= ml.image("small_skull") %><%= link_to ml.name({"uid"=>usership.user.xid}), :controller => :home , :action => :friend ,:id => usership.user.xid %>正在该码头抢劫<br>
+				 <% if @user.dock3_time %>已经掠夺了<%= conversion(Time.now - @user.dock3_time,usership.capacity,usership.robspeed).to_i %>个金币<% end %>
 				  <% if @current_user.xid == @user.xid %>
 					  <%= submit_tag "抢劫" , :name => "dock" ,:value => "夺回码头3" %>
 				 <% end %> 
@@ -134,19 +180,6 @@ float:right;
 		<% end -%>
 	</div>
 	<div  class="dock">
-	&nbsp;
-		<% if (@user.dock4 == nil or @user.dock4 == 0) and @current_user.xid != @user.xid-%>
-			 <%= submit_tag "抢劫" , :name => "dock" ,:value => "停靠" %>
-		<% else #别人正在抢 -%>
-			 <% if @user.dock4 and @user.dock4 > 0 -%>
-				 <% usership = Usership.find(@user.dock4) %>
-				 <img src="<%= usership.ship.img_url %>" title="价格:<%=h usership.ship.price %>  <%=h usership.ship.intro %>"><br>
-				 <img src="http://fmn001.xnimg.cn/fmn001/pic001/20080924/16/55/large_7Bq8_3172b198177.jpg"><%= link_to "<xn:name uid=\"#{usership.user.xid}\" />", :controller => :home , :action => :index ,:id => usership.user.xid %>正停靠在该码头<br>
-				  <% if @current_user.xid == @user.xid %>
-					  <%= submit_tag "抢劫" , :name => "dock" ,:value => "赶跑TA" %>
-				 <% end %> 
-			 <% end %>
-		<% end -%>
 	
 	</div>
 	<div style="clear:both;"></div>
@@ -157,11 +190,11 @@ float:right;
 <% @current_user.usership.each do |ship|  -%>
 	<div class="ship">
     
-	<img src="<%= ship.ship.img_url %>" border="0" title="价格:<%=h ship.ship.price %>  <%=h ship.ship.intro %>"><br>
+	<%= usershipimg(ship)%><br>
 	<%= radio_button  "usership","id", ship.id , :checked => "checked" %> <%= ship.name %>
-	<% if ship.robof && ship.robof > 0   %>
-	<span class="gray">(正在<%= link_to "<xn:name uid=\"#{ship.robof}\" />", :controller => :home , :action => :index ,:id => ship.robof %>的岛上烧杀抢掠)</span><br>
-     <% if ship.robtime %>已经掠夺了<%= conversion(Time.now - ship.robtime).to_i %>个金币<% end %>
+	<% if ship.robof && ship.robof > '0'   %>
+	<span class="gray">(正在<%= link_to ml.name({"uid"=>ship.robof}), :controller => :home , :action => :friend ,:id => ship.robof %>的岛上烧杀抢掠)</span><br>
+     <% if ship.robtime %>已经掠夺了<%= conversion(Time.now - ship.robtime,ship.capacity,ship.robspeed).to_i %>个金币<% end %>
 	<% end %>
 	</div>
 <% end -%>
@@ -171,7 +204,7 @@ float:right;
 <% if @mynotice %>
 	<div  id="noticelist">
 		<hr />
-		<span id="piratenews">海盗快讯</span>
+		<span id="piratenews">海盗快讯  <%= link_to "查看更多",:controller => :notice %></span>
 		<% if @mynotice.length ==0 %>
 			<br><span class="gray">暂无信息</span>
 		<% else %>
@@ -190,9 +223,11 @@ float:right;
 
 <h4>海盗好友</h4>
 <% @current_user.friend_ids.each do |friend| %>
+<% pp"---------------friend:#{friend.inspect}--------" %>
 <div>
-<%= link_to ml.name({"uid" => friend}),:controller => :home,:action => :friend,:id => friend %>
+<%= link_to ml.name({"uid" => friend,"linked" => "false"}),:controller => :home,:action => :friend,:id => friend %>
 </div>
 <% end %>
 </div>
+
 </div>

@@ -11,7 +11,7 @@ module ::ActionController
     def link_to_canvas?(params, options)
       option_override = options[:canvas]
       return false if option_override == false # important to check for false. nil should use default behavior
-      option_override || @request.parameters["xn_sig_in_iframe"] == "0" ||  @request.parameters[:xn_sig_in_iframe] == "0" 
+      option_override || @request.parameters["51_sig_in_canvas"] == "1"
     end
   
     def rewrite_url_with_wuyao(*args)

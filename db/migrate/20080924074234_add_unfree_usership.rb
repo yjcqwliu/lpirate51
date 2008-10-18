@@ -1,7 +1,7 @@
 class AddUnfreeUsership < ActiveRecord::Migration
   def self.up
      #add_column :userships, :unfree, :string
-	 add_column :userships, :robof, :integer
+	 add_column :userships, :robof, :string
   end
 
   def self.down

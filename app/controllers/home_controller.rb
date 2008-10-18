@@ -3,22 +3,10 @@ class HomeController < ApplicationController
 	def index
 		@user = @current_user
 		@mynotice = Notice.find(:all,
-		                     :conditions => [" from_xid in (?,?) or to_xid in (?,?)",@current_user.friend_ids,@current_user.xid,@current_user.friend_ids,@current_user.xid],
+		                     :conditions => ["( from_xid in (?,?) or to_xid in (?,?) ) and ltype <> 11",@current_user.friend_ids,@current_user.xid.to_s,@current_user.friend_ids,@current_user.xid.to_s],
 							  :order => " updated_at desc ",
 							  :limit => 20
 							 )
-	end
-	
-	def me
-	   @user = @current_user
-	   		@mynotice = Notice.find(:all,
-		                     :conditions => [" from_xid in (?,?) or to_xid in (?,?)",@current_user.friend_ids,@current_user.xid,@current_user.friend_ids,@current_user.xid],
-							  :order => " updated_at desc ",
-							  :limit => 20
-							 )
-		
-	   render :action => :index
-	   
 	end
 	
 	def friend
@@ -27,11 +15,7 @@ class HomeController < ApplicationController
 		else
 		    @user  = User.login(@current_user.friend_ids.rand)
 		end	   
-		@mynotice = Notice.find(:all,
-		                     :conditions => [" from_xid in (?,?) or to_xid in (?,?)",@current_user.friend_ids,@current_user.xid,@current_user.friend_ids,@current_user.xid],
-							  :order => " updated_at desc ",
-							  :limit => 20
-							 )
+		@mynotice = nil
 	   render :action => :index
 	end
 	
@@ -60,7 +44,7 @@ class HomeController < ApplicationController
 				@isapparray << no.xid
 				@notapparray.delete(no.xid)
 			end
-			pp("------------------------@notapparray:#{@notapparray.inspect}-----------")
+			#pp("------------------------@notapparray:#{@notapparray.inspect}-----------")
 			(1..5).each do |i|
 				  @notapparray_five << @notapparray.rand
 			 end 
@@ -69,30 +53,29 @@ class HomeController < ApplicationController
 	
 	
 	def rob
-	    
 		
 		@user = User.find(params[:id])
 		
-		     
 			 if (usership=params[:usership]) == nil
 				 xn_redirect_to("home/friend/#{@user.xid}",{:notice => "抢劫前请选择一只空闲的船，如果你没有空闲的船，<a href=\"#{url_for  :controller => :shop,:action => :index}\">去买一艘吧？</a>"})
 			 else
 				 @usership = Usership.find(usership[:id])
 				 if false # @usership.robof != nil and @usership.robof !=0
-					 #xn_redirect_to("home/friend/#{@user.xid}",{:notice => "抢劫前请选择一只空闲的船，如果你没有空闲的船，<a href=\"#{url_for  :controller => :shop,:action => :index}\">去买一艘吧？</a>"})
+					 #xn_redirect_to("home/friend/#{@user.xid}",{:notice => "抢劫前请选择一只空闲的船，如果你没有空闲的船，<a href=\"#{url_for  :controller => :shop,:action => :index}\">去买一艘吧？</a>"}
 				 else
-					 
 					 dock = params[:dock]
-					 #pp("-------------usership:#{@usership.inspect}------------")
-					 
-					 
+					 dock = Iconv.conv('utf-8','gbk',dock)
+					 #pp("-------------usership:#{@usership.inspect}----------#{'抢劫码头1' == Iconv.conv('utf-8','gbk',dock)}--")
+					 pp("=========#{@user.inspect}=======")
 					 #重新开始抢劫
 					 case dock
 						when "抢劫码头1"
+						   pp("-------------rob111------------")
 						   if (@user.dock1 == nil or @user.dock1 == 0 ) and ! isrobself
 						         rob_balance(@usership)
 								 @user.dock1 = usership[:id]
 								 @user.dock1_time = Time.now
+								 @user.friend_ids_will_change!
 								 @user.save
 								
 								 @usership.robof = @user.xid
@@ -103,6 +86,7 @@ class HomeController < ApplicationController
 						         rob_balance(@usership)
 								 @user.dock2 = usership[:id]
 								 @user.dock2_time = Time.now
+								 @user.friend_ids_will_change!
 								 @user.save
 								
 								 @usership.robof = @user.xid
@@ -113,6 +97,7 @@ class HomeController < ApplicationController
 						         rob_balance(@usership)
 								 @user.dock3 = usership[:id]
 								 @user.dock3_time = Time.now
+								 @user.friend_ids_will_change!
 								 @user.save
 								
 								 @usership.robof = @user.xid
@@ -123,6 +108,7 @@ class HomeController < ApplicationController
 						         balance(@usership)
 								 @user.dock4 = usership[:id]
 								 @user.dock4_time = Time.now
+								 @user.friend_ids_will_change!
 								 @user.save
 								
 								 @usership.robof = @user.xid
@@ -149,7 +135,7 @@ class HomeController < ApplicationController
 						   
 						   end
 				     end
-				 xn_redirect_to("home/friend/#{@user.xid}")
+				 xn_redirect_to("/lpirate/home/friend/#{@user.xid}")
 				 end 
 				
 			 end
