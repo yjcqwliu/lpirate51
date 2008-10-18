@@ -97,17 +97,17 @@ text-size:15px;
 贸易码头<br>
 &nbsp;
 		<% if (@user.dock4 == nil or @user.dock4 == 0) and @current_user.xid != @user.xid-%>
-<%=h ml.if_is_app_user({}) %> 
+<%= ml.if_is_app_user({}) %> 
 <form action="business/business/<%= @user.id %>"> 
- <%=h submit_tag "贸易" , :name => "dock" ,:value => "贸易" %>
+ <%= submit_tag "贸易" , :name => "dock" ,:value => "贸易" %>
 </form>
-<%=h ml.mlelse %>
+<%= ml.mlelse %>
 <form action="business/business/<%= @user.id %>"> 
- <%=h submit_tag "贸易" , :name => "dock" ,:value => "贸易" %>
+ <%= submit_tag "贸易" , :name => "dock" ,:value => "贸易" %>
 </form>
 
-<%=h ml.end_mlelse %>
-<%=h ml.end_if_is_app_user %> 
+<%= ml.end_mlelse %>
+<%= ml.end_if_is_app_user %> 
 <%= link_to "换下一个",:controller=>:home,:action => :friend,:id=>nil %> 
 
 
