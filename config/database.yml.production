@@ -4,5 +4,5 @@ production:
   adapter: mysql
   database: lpirate51_production
   host: localhost
-  username: lpirate
-  password: ue843,.wd
+  username: lpirate51
+  password: i84.,dfo;

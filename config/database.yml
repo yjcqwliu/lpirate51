@@ -4,8 +4,8 @@ development:
   adapter: mysql
   database: lpirate51_production
   host: localhost
-  username: root
-  password: 
+  username: lpirate51
+  password: i84.,dfo;
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
