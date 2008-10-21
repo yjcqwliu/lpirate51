@@ -43,7 +43,7 @@ width:450px;
 }
 .ship{
 float:left;
-width:180px;
+width:130px;
 text-align:center;
 }
 
@@ -98,11 +98,11 @@ text-size:15px;
 &nbsp;
 		<% if (@user.dock4 == nil or @user.dock4 == 0) and @current_user.xid != @user.xid-%>
 <%= ml.if_is_app_user({}) %> 
-<form action="business/business/<%= @user.id %>"> 
+<form action="/lpirate/business/business/<%= @user.id %>"> 
  <%= submit_tag "贸易" , :name => "dock" ,:value => "贸易" %>
 </form>
 <%= ml.mlelse %>
-<form action="business/business/<%= @user.id %>"> 
+<form action="/lpirate/business/business/<%= @user.id %>"> 
  <%= submit_tag "贸易" , :name => "dock" ,:value => "贸易" %>
 </form>
 

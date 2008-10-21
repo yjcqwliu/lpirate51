@@ -103,7 +103,7 @@ class ApplicationController < ActionController::Base
 								end
 								usership.robdock = 0
 								usership.robuser.save
-								usership.robof = 0
+								usership.robof = '0'
 								usership.save
 								cmp_money
 					 end

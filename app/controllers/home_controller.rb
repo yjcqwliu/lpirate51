@@ -135,7 +135,7 @@ class HomeController < ApplicationController
 						   
 						   end
 				     end
-				 xn_redirect_to("/lpirate/home/friend/#{@user.xid}")
+				 xn_redirect_to("home/friend/#{@user.xid}")
 				 end 
 				
 			 end

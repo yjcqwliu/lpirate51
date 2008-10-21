@@ -83,12 +83,12 @@ class ApplicationController < ActionController::Base
   end
   
   def xn_redirect_to(to_url,feilds={})
-    path = "#{to_url}?"
+    lpath = "http://apps.51.com/lpirate/#{to_url}?"
         feilds.each do |key,value|
-	     path += "#{key}=#{URI.escape(value)}&"
+	     lpath += "#{key}=#{URI.escape(value)}&"
         end
-    render :text => "
-    <fo:redirect url=\"#{path}\"/>"
+	pp("---------lpath:#{lpath}------------")
+    render :text => "<fo:redirect url=\"#{lpath}\"/>"
 	#render :text => "你没有权限操作"
   end
 
@@ -106,7 +106,7 @@ class ApplicationController < ActionController::Base
 								end
 								usership.robdock = 0
 								usership.robuser.save
-								usership.robof = 0
+								usership.robof = '0'
 								usership.save
 								cmp_money
 					 end

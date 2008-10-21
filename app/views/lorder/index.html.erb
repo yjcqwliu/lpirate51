@@ -53,16 +53,18 @@ color:blue;
 <% @user.each do |user| %>
 <% pmcount += 1 %>
 <div id="shiplist">
+<div>
 &nbsp;<span class="pm"><%= ( @page.to_i - 1) * @user.per_page + pmcount %></span>&nbsp;<%= link_to ml.userpic({"uid" => user.xid}),:controller => :home,:action => :friend,:id => user.xid %>
 <%= link_to ml.name({"uid" => user.xid}),:controller => :home,:action => :friend,:id => user.xid %>&nbsp;
 金币<strong>:<span class="gold"><%= user.gold %></span></strong>&nbsp;
 海盗币<strong>:<span class="pgold"><%= user.pgold %></span></strong>
+</div>
 <% user.usership.each do |ship|  -%>
 	<div class="ship">
     
 	<%= usershipimg(ship)%><br>
 	<%= ship.name %>
-	<% if ship.robof && ship.robof > 0   %>
+	<% if ship.robof && ship.robof > '0'   %>
 	<span class="gray">(正在<%= link_to "<xn:name uid=\"#{ship.robof}\" />", :controller => :home , :action => :friend ,:id => ship.robof %>的岛上烧杀抢掠)</span><br>
      <% if ship.robtime %>已经掠夺了<%= conversion(Time.now - ship.robtime,ship.capacity,ship.robspeed).to_i %>个金币<% end %>
 	<% end %>

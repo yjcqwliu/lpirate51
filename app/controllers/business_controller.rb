@@ -15,7 +15,8 @@ class BusinessController < ApplicationController
 				@current_user.save
 				#pp("--------save2---business_update_time:#{@current_user.business_update_at}-----Time.now:#{Time.now + 8.hour}--------")
 				#################新鲜事##############################
-				@notice = "成功与#{url_to_island(@user.xid)}交易，赚了#{getgold}金币"
+				#@notice = "成功与#{url_to_island(@user.xid)}交易，赚了#{getgold}金币
+				@notice = "成功交易，赚了#{getgold}金币"
 				notice = Notice.new()
 				notice.user_id = @current_user.id
 				notice.from_xid = @current_user.xid
