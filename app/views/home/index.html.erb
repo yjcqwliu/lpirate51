@@ -44,6 +44,7 @@ width:450px;
 .ship{
 float:left;
 width:130px;
+height:200px;
 text-align:center;
 }
 
@@ -136,7 +137,7 @@ text-size:15px;
 			 <% if @user.dock1 and @user.dock1 > 0 -%>
 				 <% usership = Usership.find(@user.dock1) %>
 				 <%= usershipimg(usership)%><br>
-				<%= ml.image("small_skull") %><%= link_to ml.name({"uid"=>usership.user.xid}), :controller => :home , :action => :friend ,:id => usership.user.xid %>正在该码头抢劫<br>
+				<%= ml.image("small_skull") %><%= link_to ml.name({"uid"=>usership.user.xid,"linked" => "false"}), :controller => :home , :action => :friend ,:id => usership.user.xid %>正在该码头抢劫<br>
 				 已经掠夺了<%= conversion(Time.now - @user.dock1_time,usership.capacity,usership.robspeed).to_i %>个金币
 				 <% if @current_user.xid == @user.xid %>
 					  <%= submit_tag "抢劫" , :name => "dock" ,:value => "夺回码头1" %>
@@ -192,7 +193,7 @@ text-size:15px;
 	<%= usershipimg(ship)%><br>
 	<%= radio_button  "usership","id", ship.id , :checked => "checked" %> <%= ship.name %>
 	<% if ship.robof && ship.robof > '0'   %>
-	<span class="gray">(正在<%= link_to ml.name({"uid"=>ship.robof}), :controller => :home , :action => :friend ,:id => ship.robof %>的岛上烧杀抢掠)</span><br>
+	<span class="gray">(正在<%= link_to ml.name({"uid"=>ship.robof,"linked" => "false"}), :controller => :home , :action => :friend ,:id => ship.robof %>的岛上烧杀抢掠)</span><br>
      <% if ship.robtime %>已经掠夺了<%= conversion(Time.now - ship.robtime,ship.capacity,ship.robspeed).to_i %>个金币<% end %>
 	<% end %>
 	</div>
