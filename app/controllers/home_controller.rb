@@ -1,154 +1,103 @@
 class HomeController < ApplicationController
-	require 'pp'
+	require 'nkf'
+	before_filter :check_network, :except => [:network,:save_network]
 	def index
-		@user = @current_user
-		@mynotice = Notice.find(:all,
-		                     :conditions => ["( from_xid in (?,?) or to_xid in (?,?) ) and ltype <> 11",@current_user.friend_ids,@current_user.xid.to_s,@current_user.friend_ids,@current_user.xid.to_s],
-							  :order => " updated_at desc ",
-							  :limit => 20
-							 )
+		if( params[:location])
+			@act_location = params[:location].isutf8.to_s
+			if( @act_location.blank? )
+				@act_location = Iconv.conv('utf-8','gbk',params[:location]) 
+				pp "done #{@act_location}"
+			else
+				pp "don't done "
+			end
+		else
+			@act_location = @current_user.act_location
+		end
+		@keywords = Iconv.conv('utf-8','gbk',@keywords) if(params[:keywords] &&  !(@keywords = params[:keywords]).isutf8 )
+		@time_select = params[:time_select] || 93  #默认情况下显示最近7天内将要举行的活		
+		@activity = find_location_in_activity({:act_location => @act_location, :time_select => @time_select, :keywords => @keywords})
+		@page = params[:page] || 1
+			@activity = @activity.paginate(:page => @page, :per_page => 20) if @activity
+	end
+	
+	def my
+        @activity = @current_user.activity.joined
+		@page = params[:page] || 1
+		@activity = @activity.paginate(:page => @page, :per_page => 20)
+	end
+	
+	def my_start
+	    @activity = @current_user.activity.starting
+		@page = params[:page] || 1
+		@activity = @activity.paginate(:page => @page, :per_page => 20)
+		render :action => :my
+	end
+	
+	def my_timeout
+	    @activity = @current_user.activity.timeout
+		@page = params[:page] || 1
+		@activity = @activity.paginate(:page => @page, :per_page => 20)
+		render :action => :my
 	end
 	
 	def friend
-	   if id = params[:id]
-		    @user  = User.login(id)
-		else
-		    @user  = User.login(@current_user.friend_ids.rand)
-		end	   
-		@mynotice = nil
-	   render :action => :index
+        @act_location = @current_user.act_location
+        @activity = @current_user.friend_activity
+		@page = params[:page] || 1
+		@activity = @activity.paginate(:page => @page, :per_page => 20)
+		render :action => :index
+	end
+  def activity_user
+		@user = SnsUser.activity_user()
+		#render :action => :index
 	end
 	
-	def myship
-	   
+	def allcity
+        @act_location = @current_user.act_location
+		@activity = find_location_in_activity({:time_select => @time_select, :keywords => @keywords})
+		@page = params[:page] || 1
+		@activity = @activity.paginate(:page => @page, :per_page => 20)
+		render :action => :index
 	end
-	
-	def help
-	    @friend = current_user.friend_ids.rand
+	def network
+	    
 	end
-	
-	def invite
-	    if ids=params[:ids]
-			ids.each do |id|
-				User.login(id,@current_user.xid)
-			end
-			 xn_redirect_to("home/invite",{"notice" => "成功邀请了#{ids.length}个人，只要他们加入游戏，你就可以获得奖励哦^_^ 谢谢你的支持"})
-		else
-			@isappuser = User.find(:all,
-									:conditions => [" xid in (?) and session_key is not null ",@current_user.friend_ids]
-									)
-			@notapparray = @current_user.friend_ids
-			@notapparray_five = []
-			@isapparray = []
-			@isappuser.each do |no|
-				@isapparray << no.xid
-				@notapparray.delete(no.xid)
-			end
-			#pp("------------------------@notapparray:#{@notapparray.inspect}-----------")
-			(1..5).each do |i|
-				  @notapparray_five << @notapparray.rand
-			 end 
-		 end
-	end
-	
-	
-	def rob
-		
-		@user = User.find(params[:id])
-		
-			 if (usership=params[:usership]) == nil
-				 xn_redirect_to("home/friend/#{@user.xid}",{:notice => "抢劫前请选择一只空闲的船，如果你没有空闲的船，<a href=\"#{url_for  :controller => :shop,:action => :index}\">去买一艘吧？</a>"})
-			 else
-				 @usership = Usership.find(usership[:id])
-				 if false # @usership.robof != nil and @usership.robof !=0
-					 #xn_redirect_to("home/friend/#{@user.xid}",{:notice => "抢劫前请选择一只空闲的船，如果你没有空闲的船，<a href=\"#{url_for  :controller => :shop,:action => :index}\">去买一艘吧？</a>"}
-				 else
-					 dock = params[:dock]
-					 dock = Iconv.conv('utf-8','gbk',dock)
-					 #pp("-------------usership:#{@usership.inspect}----------#{'抢劫码头1' == Iconv.conv('utf-8','gbk',dock)}--")
-					 pp("=========#{@user.inspect}=======")
-					 #重新开始抢劫
-					 case dock
-						when "抢劫码头1"
-						   pp("-------------rob111------------")
-						   if (@user.dock1 == nil or @user.dock1 == 0 ) and ! isrobself
-						         rob_balance(@usership)
-								 @user.dock1 = usership[:id]
-								 @user.dock1_time = Time.now
-								 @user.friend_ids_will_change!
-								 @user.save
-								
-								 @usership.robof = @user.xid
-								 @usership.save
-						   end
-						when "抢劫码头2"
-						   if (@user.dock2 == nil or @user.dock2 == 0 ) and ! isrobself
-						         rob_balance(@usership)
-								 @user.dock2 = usership[:id]
-								 @user.dock2_time = Time.now
-								 @user.friend_ids_will_change!
-								 @user.save
-								
-								 @usership.robof = @user.xid
-								 @usership.save
-						   end
-						when "抢劫码头3"
-						   if (@user.dock3 == nil or @user.dock3 == 0 ) and ! isrobself
-						         rob_balance(@usership)
-								 @user.dock3 = usership[:id]
-								 @user.dock3_time = Time.now
-								 @user.friend_ids_will_change!
-								 @user.save
-								
-								 @usership.robof = @user.xid
-								 @usership.save
-						   end
-						when "停靠"
-						   if (@user.dock4 == nil or @user.dock4 == 0 ) and ! isrobself
-						         balance(@usership)
-								 @user.dock4 = usership[:id]
-								 @user.dock4_time = Time.now
-								 @user.friend_ids_will_change!
-								 @user.save
-								
-								 @usership.robof = @user.xid
-								 @usership.save
-						   end
-						when "夺回码头1"
-						   if @user.dock1  and @user.dock1 > 0  and  isrobself 
-						         reseize_balance(Usership.find(@user.dock1))
-						   
-						   end
-						when "夺回码头2"
-						   if @user.dock2  and @user.dock2 > 0  and  isrobself 
-						         reseize_balance(Usership.find(@user.dock2))
-						   
-						   end
-						when "夺回码头3"
-						   if @user.dock3  and @user.dock3 > 0  and  isrobself 
-						         reseize_balance(Usership.find(@user.dock3))
-						   
-						   end
-						when "赶跑TA"
-						   if @user.dock4  and @user.dock4 > 0  and  isrobself 
-						         balance(Usership.find(@user.dock4))
-						   
-						   end
-				     end
-				 xn_redirect_to("home/friend/#{@user.xid}")
-				 end 
-				
-			 end
-		 
-	end
-private	
-	def isrobself
-		if @user.xid == @current_user.xid 
-			true
-		else
-			false
+	def save_network
+	    begin
+		    @current_user.act_location = Iconv.conv('utf-8','gbk',params[:city])
+			@current_user.save
+			xn_redirect_to("home/index")
+		rescue
+		    xn_redirect_to("home/network")
 		end
-				# xn_redirect_to("home/friend",{:notice => "不能抢劫自己"})
-	
 	end
+	private
+	def check_network
+		if @current_user.act_location.blank?
+			xn_redirect_to("home/network")
+		end
+	end
+	def find_location_in_activity(tmp_params)
+	      #tmp_arr = [" calendar_id in (1684,1685,1688,1691,1690,1695,1724,1692, 1693,1696,1712,1736,1728,1687,1732,1689,1716,1720,1686,1694,94318) and start_time > ? ", Time.now]
+		tmp_arr = [" 1=1 "]
+		   if ! tmp_params[:act_location].blank?
+		        tmp_arr[0] += " and act_location = ? "
+			tmp_arr << tmp_params[:act_location]
+		   end
+		   if ! tmp_params[:keywords].blank?
+		        tmp_arr[0] += " and act_subject like ? "
+			tmp_arr << "%#{tmp_params[:keywords]}%"
+		   end
+		   if ! tmp_params[:time_select].blank?
+			tmp_arr[0] += " and start_time < ? "
+		        #tmp_arr[0] += " and start_time < ? and start_time > ?"
+			tmp_arr << Time.now + tmp_params[:time_select].to_i.day
+			#tmp_arr << Time.now
+		   end	
+		   #pp "-----------------tmp_arr:#{tmp_arr.inspect}--------------"
+		   @loc_activity = Activity.find(:all,:conditions => tmp_arr, :order => " start_time ASC")
+       #pp "-----------------@loc_activity#{@loc_activity.inspect}--------------"
+       @loc_activity
+	end
+
 end

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>check_utf8_encoding (String)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File guess_utf.rb, line 118</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-identifier">check_utf8_encoding</span>
+    <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">if</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">encoding</span> <span class="ruby-operator">!=</span> <span class="ruby-constant">Encoding</span>.<span class="ruby-identifier">find</span>(<span class="ruby-value str">'utf-8'</span>)
+    <span class="ruby-identifier">state</span> = <span class="ruby-identifier">:s0</span>
+    <span class="ruby-identifier">n_of_chars</span> = <span class="ruby-value">0</span>
+    <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">bytes</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">byte</span><span class="ruby-operator">|</span>
+      <span class="ruby-keyword kw">case</span> <span class="ruby-identifier">state</span>
+        <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:s0</span>
+          <span class="ruby-identifier">n_of_chars</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+          <span class="ruby-keyword kw">if</span> (<span class="ruby-value">0x00</span><span class="ruby-operator">..</span><span class="ruby-value">0x7</span><span class="ruby-constant">F</span>).<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">byte</span>) <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">state</span> = <span class="ruby-identifier">:s0</span>
+          <span class="ruby-keyword kw">elsif</span> (<span class="ruby-value">0x</span><span class="ruby-constant">C2</span><span class="ruby-operator">..</span><span class="ruby-value">0x</span><span class="ruby-constant">DF</span>).<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">byte</span>) <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">state</span> = <span class="ruby-identifier">:s1</span>
+          <span class="ruby-keyword kw">elsif</span> <span class="ruby-value">0x</span><span class="ruby-constant">E0</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">byte</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">state</span> = <span class="ruby-identifier">:s2</span>
+          <span class="ruby-keyword kw">elsif</span> (<span class="ruby-value">0x</span><span class="ruby-constant">E1</span><span class="ruby-operator">..</span><span class="ruby-value">0x</span><span class="ruby-constant">EC</span>).<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">byte</span>) <span class="ruby-operator">||</span> (<span class="ruby-value">0x</span><span class="ruby-constant">EE</span><span class="ruby-operator">..</span><span class="ruby-value">0x</span><span class="ruby-constant">EF</span>).<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">byte</span>) <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">state</span> = <span class="ruby-identifier">:s3</span>
+          <span class="ruby-keyword kw">elsif</span> <span class="ruby-value">0x</span><span class="ruby-constant">ED</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">byte</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">state</span> = <span class="ruby-identifier">:s4</span>
+          <span class="ruby-keyword kw">elsif</span> <span class="ruby-value">0x</span><span class="ruby-constant">F0</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">byte</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">state</span> = <span class="ruby-identifier">:s5</span>
+          <span class="ruby-keyword kw">elsif</span> (<span class="ruby-value">0x</span><span class="ruby-constant">F1</span><span class="ruby-operator">..</span><span class="ruby-value">0x</span><span class="ruby-constant">F3</span>).<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">byte</span>) <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">state</span> = <span class="ruby-identifier">:s7</span>
+          <span class="ruby-keyword kw">elsif</span> <span class="ruby-value">0x</span><span class="ruby-constant">F4</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">byte</span> <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">state</span> = <span class="ruby-identifier">:s8</span>
+          <span class="ruby-keyword kw">else</span> <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:s1</span>
+          <span class="ruby-keyword kw">if</span> (<span class="ruby-value">0x80</span><span class="ruby-operator">..</span><span class="ruby-value">0x</span><span class="ruby-constant">BF</span>).<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">byte</span>) <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">state</span> = <span class="ruby-identifier">:s0</span> 
+          <span class="ruby-keyword kw">else</span> <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:s2</span>
+          <span class="ruby-keyword kw">if</span>  (<span class="ruby-value">0x</span><span class="ruby-constant">A0</span><span class="ruby-operator">..</span><span class="ruby-value">0x</span><span class="ruby-constant">BF</span>).<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">byte</span>) <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">state</span> = <span class="ruby-identifier">:s1</span>
+          <span class="ruby-keyword kw">else</span> <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:s3</span>
+          <span class="ruby-keyword kw">if</span>  (<span class="ruby-value">0x80</span><span class="ruby-operator">..</span><span class="ruby-value">0x</span><span class="ruby-constant">BF</span>).<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">byte</span>) <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">state</span> = <span class="ruby-identifier">:s1</span>
+          <span class="ruby-keyword kw">else</span> <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:s4</span>
+          <span class="ruby-keyword kw">if</span>  (<span class="ruby-value">0x80</span><span class="ruby-operator">..</span><span class="ruby-value">0x9</span><span class="ruby-constant">F</span>).<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">byte</span>) <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">state</span> = <span class="ruby-identifier">:s1</span>
+          <span class="ruby-keyword kw">else</span> <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:s5</span>
+          <span class="ruby-keyword kw">if</span>  (<span class="ruby-value">0x90</span><span class="ruby-operator">..</span><span class="ruby-value">0x</span><span class="ruby-constant">BF</span>).<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">byte</span>) <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">state</span> = <span class="ruby-identifier">:s6</span>
+          <span class="ruby-keyword kw">else</span> <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:s6</span>
+          <span class="ruby-keyword kw">if</span>  (<span class="ruby-value">0x80</span><span class="ruby-operator">..</span><span class="ruby-value">0x</span><span class="ruby-constant">BF</span>).<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">byte</span>) <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">state</span> = <span class="ruby-identifier">:s1</span>
+          <span class="ruby-keyword kw">else</span> <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:s7</span>
+          <span class="ruby-keyword kw">if</span>  (<span class="ruby-value">0x80</span><span class="ruby-operator">..</span><span class="ruby-value">0x</span><span class="ruby-constant">BF</span>).<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">byte</span>) <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">state</span> = <span class="ruby-identifier">:s6</span>
+          <span class="ruby-keyword kw">else</span> <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">end</span>
+        <span class="ruby-keyword kw">when</span> <span class="ruby-identifier">:s8</span>
+          <span class="ruby-keyword kw">if</span>  (<span class="ruby-value">0x80</span><span class="ruby-operator">..</span><span class="ruby-value">0x8</span><span class="ruby-constant">F</span>).<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">byte</span>) <span class="ruby-keyword kw">then</span> <span class="ruby-identifier">state</span> = <span class="ruby-identifier">:s6</span>
+          <span class="ruby-keyword kw">else</span> <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span> <span class="ruby-comment cmt"># case</span>
+    <span class="ruby-keyword kw">end</span> <span class="ruby-comment cmt"># self.bytes.each</span>
+    <span class="ruby-keyword kw">if</span> <span class="ruby-identifier">state</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">:s0</span> <span class="ruby-keyword kw">then</span> <span class="ruby-keyword kw">return</span> <span class="ruby-identifier">n_of_chars</span>
+    <span class="ruby-keyword kw">else</span> <span class="ruby-keyword kw">return</span> <span class="ruby-keyword kw">nil</span> <span class="ruby-keyword kw">end</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

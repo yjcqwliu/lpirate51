@@ -1,239 +1,97 @@
-<% ml = Ml.new %>
-<style type="text/css">
-#mybody {
-	width: 540px;
-	float:left;
-	padding: 5px;
-}
-#docklist{
-}
-#roblist{
-}
-.dock {
-	float: left;
-	width:130px;
-	text-align:center;
-}
-#friendlist {
-float:right;
-width:120px;
-height:300px;
-overflow:auto;
-}
+<div class="event_header_block clearfix">
+  <h2 class="event_header" style="float:left;font-size:14px;padding:8px 0px 5px 24px;"><%= @act_location %> <a onclick="seeOtherCity();" href="#">查看其它城市的活动</a> </h2>
+ <div class="event_search">
+						<form method="GET" action="/<%= ENV['WUYAO_RELATIVE_URL_ROOT'] -%>/">
 
-#islandinfo{
-	color:red;
-	font-weight: bold;
-}
-#piratenews{
-	color:green;
-	font-weight: bold;
-}
-#mybody #noticelist #noticeone {
-height:25px;
-}
-#mybody #noticelist #noticecontent {
-float:left;
-height:28px;
-width:450px;
-}
-#myshipspan{
-	color:blue;
-	font-weight: bold;
-}
-.ship{
-float:left;
-width:130px;
-text-align:center;
-}
-
-h4 {
-text-align:center;height:25px;background:#D8DFEA none repeat scroll 0%;
-border-top:1px solid #3B5888;font-size:14px;font-weight:bold;line-height:25px;font-weight:bold;
-}
-.gray{
-color: #666666;
-}
-.gotofriend{
-color:#0000ff;
-text-align:right;
-}
-#mybody #noticelist #noticetime {
-float:right;
-}
-#notify
-{
-float:right;
-width:160px;
-height:100px;
-}
-#business_dock
-{
-border:2px solid #225599;
-float: left;
-width:130px;
-text-align:center;
-}
-.gorob{
-float:right;
-text-size:15px;
-}
-</style>
-
-<div>
-
-<div id="mybody">
-<div class="gotofriend"></div>
-<div id="islandinfo"><%= ml.userpic("uid" => @user.xid,"linked"=>"true") %><%= ml.name("uid"=>@user.xid)%>的小岛<span class="gorob"><%= link_to ">>去抢劫好友",:controller => :home ,:action => :friend  %></span><br>
-<hr /></div>
-<div id="docklist">
-<div id="dock1" class="dock"><%= ml.image("dock") %><br>
-码头</div>
-<div id="dock2" class="dock"><%= ml.image("dock") %><br>
-码头</div>
-<div id="dock3" class="dock"><%= ml.image("dock") %><br>
-码头</div>
-<div id="business_dock" ><%= ml.image("dock") %><br>
-贸易码头<br>
-&nbsp;
-		<% if (@user.dock4 == nil or @user.dock4 == 0) and @current_user.xid != @user.xid-%>
-<%= ml.if_is_app_user({}) %> 
-<form action="/lpirate/business/business/<%= @user.id %>"> 
- <%= submit_tag "贸易" , :name => "dock" ,:value => "贸易" %>
-</form>
-<%= ml.mlelse %>
-<form action="/lpirate/business/business/<%= @user.id %>"> 
- <%= submit_tag "贸易" , :name => "dock" ,:value => "贸易" %>
-</form>
-
-<%= ml.end_mlelse %>
-<%= ml.end_if_is_app_user %> 
-<%= link_to "换下一个",:controller=>:home,:action => :friend,:id=>nil %> 
-
-
-			 
-		<% else #别人正在抢 -%>
-			 <% if @user.dock4 and @user.dock4 > 0 -%>
-				 <% usership = Usership.find(@user.dock4) %>
-				 <%= usershipimg(usership)%><br>
-				<%= ml.image("small_skull") %><%= link_to ml.name({"uid"=>usership.user.xid}), :controller => :home , :action => :friend ,:id => usership.user.xid %>正停靠在该码头<br>
-				  <% if @current_user.xid == @user.xid %>
-					  <%= submit_tag "抢劫" , :name => "dock" ,:value => "赶跑TA" %>
-				 <% end %> 
-			 <% end %>
-		<% end -%>
-	</div>
-<div style="clear:both;"></div>
+							<input type="hidden" value="<%= @act_location %>" name="location" />
+							<input type="text" autocomplete="off" id="keywords"
+								name="keywords" class="search_event" />
+							<input name="" type="image" class="search_new_btn"
+								src="http://uchome.developer.manyou.com/uchome/attachment/200901/23/965493_1232699417jAz1.gif" align="absmiddle"
+								style="margin:-1px 0 0 -5px" />
+						</form>
+  </div>
 </div>
-<form action="/lpirate/home/rob/<%= @user.id %>">
-<div id="roblist">
+<div style="clear:both"></div>
+<div style="position:relative;">
+<div id="sub-nav" style="position:relative;">
+						<ul>
+						    <% if !@act_location.blank? %>
+							<li class="selected">
+								<a href="#" ><%= @act_location %></a>
+							</li>
+							<% end %>
+							<li >
+								<div class="event_nav_drop">
+									<%= link_to "全部城市", {:controller => :home, :action => :index, :location => ""},:id => "event_drop", :class => "event_nav_link"%>
+								</div>
 
-	<div  class="dock">
-	&nbsp;
-		<% if (@user.dock1 == nil or @user.dock1 == 0) and @current_user.xid != @user.xid -%>
-			 <%= submit_tag "抢劫" , :name => "dock" ,:value => "抢劫码头1" %>
-		<% else #别人正在抢 -%>
-			 <% if @user.dock1 and @user.dock1 > 0 -%>
-				 <% usership = Usership.find(@user.dock1) %>
-				 <%= usershipimg(usership)%><br>
-				<%= ml.image("small_skull") %><%= link_to ml.name({"uid"=>usership.user.xid,"linked" => "false"}), :controller => :home , :action => :friend ,:id => usership.user.xid %>正在该码头抢劫<br>
-				 已经掠夺了<%= conversion(Time.now - @user.dock1_time,usership.capacity,usership.robspeed).to_i %>个金币
-				 <% if @current_user.xid == @user.xid %>
-					  <%= submit_tag "抢劫" , :name => "dock" ,:value => "夺回码头1" %>
-				 <% end %> 
-			  <% end %> 
-		<% end -%>
-	
-	</div>
-	<div  class="dock">
-	&nbsp;
-		<% if (@user.dock2 == nil or @user.dock2 == 0) and @current_user.xid != @user.xid -%>
-			 <%= submit_tag "抢劫" , :name => "dock" ,:value => "抢劫码头2" %>
-		<% else #别人正在抢 -%>
-			 <% if @user.dock2 and @user.dock2 > 0 -%>
-				 <% usership = Usership.find(@user.dock2) %>
-				 <%= usershipimg(usership)%><br>
-				 <%= ml.image("small_skull") %><%= link_to ml.name({"uid"=>usership.user.xid}), :controller => :home , :action => :friend ,:id => usership.user.xid %>正在该码头抢劫<br>
-				 <% if @user.dock2_time %>已经掠夺了<%= conversion(Time.now - @user.dock2_time,usership.capacity,usership.robspeed).to_i %>个金币<% end %>
-				  <% if @current_user.xid == @user.xid %>
-					  <%= submit_tag "抢劫" , :name => "dock" ,:value => "夺回码头2" %>
-				 <% end %>
-			 <% end %> 
-		<% end -%>
-	
-	</div>
-	<div  class="dock">
-	&nbsp;
-		<% if (@user.dock3 == nil or @user.dock3 == 0) and @current_user.xid != @user.xid -%>
-			 <%= submit_tag "抢劫" , :name => "dock" ,:value => "抢劫码头3" %>
-		<% else #别人正在抢 -%>
-			 <% if @user.dock3 and @user.dock3 > 0 -%>
-				 <% usership = Usership.find(@user.dock3) %>
-				 <%= usershipimg(usership)%><br>
-				<%= ml.image("small_skull") %><%= link_to ml.name({"uid"=>usership.user.xid}), :controller => :home , :action => :friend ,:id => usership.user.xid %>正在该码头抢劫<br>
-				 <% if @user.dock3_time %>已经掠夺了<%= conversion(Time.now - @user.dock3_time,usership.capacity,usership.robspeed).to_i %>个金币<% end %>
-				  <% if @current_user.xid == @user.xid %>
-					  <%= submit_tag "抢劫" , :name => "dock" ,:value => "夺回码头3" %>
-				 <% end %> 
-			 <% end %> 
-		<% end -%>
-	</div>
-	<div  class="dock">
-	
-	</div>
-	<div style="clear:both;"></div>
-</div>
-<div id="shiplist">
-<hr />
-<span id="myshipspan">我的船只</span><br>
-<ul>
-<% i = 0 %>
-<% @current_user.usership.each do |ship|  -%>
-<% i += 1 %>
-	<li class="ship">
-    
-	<%= usershipimg(ship)%><br>
-	<%= radio_button  "usership","id", ship.id , :checked => "checked" %> <%= ship.name %>
-	<% if ship.robof && ship.robof > '0'   %>
-	<span class="gray">(正在<%= link_to ml.name({"uid"=>ship.robof,"linked" => "false"}), :controller => :home , :action => :friend ,:id => ship.robof %>的岛上烧杀抢掠)</span><br>
-     <% if ship.robtime %>已经掠夺了<%= conversion(Time.now - ship.robtime,ship.capacity,ship.robspeed).to_i %>个金币<% end %>
-	<% end %>
-	</li>
-	<% if i % 4 == 0 %>
-	<li style="clear:both"></li>
-	<% end %>
-<% end -%>
-<li style="clear:both;"></li>
-</ul>
-</div>
-</form>
-<% if @mynotice %>
-	<div  id="noticelist">
-		<hr />
-		<span id="piratenews">海盗快讯  <%= link_to "查看更多",:controller => :notice %></span>
-		<% if @mynotice.length ==0 %>
-			<br><span class="gray">暂无信息</span>
-		<% else %>
-			
-				<%@mynotice.each do |n|%>
+							</li>
+							
+						</ul>
 
-					<div id="noticecontent"><%= n.content %></div><div id="noticetime"><%= distance_of_time_in_words(Time.now,n.updated_at) %></div><div style="clear:both;"></div>
+  </div>
+ </div>
+<div id="oak" class="gray clearfix">
+						<div id="event_left">
+							<div class="pager-top">
+								<span>共 <strong><% if @activity %><%= @activity.total_entries %><% else %>0<% end  %></strong>
+									个活动</span>								
+							</div>
 
-				<% end %>
-			
-		<% end %>
-	</div>
-<% end %>
+										<% if @activity %>
+                                          <%= render(:partial => "partylist", :collection => @activity )%>
+                                        <% else %>
+                                        没有找到你需要的记录
+                                        <% end %>
+							<div>
+  <center>
+  <%if @page.to_i > 1 then %>
+    <%= link_to "上一页", { :action => controller.action_name, :page => (@page.to_i - 1),:location => @act_location, :keywords => @keywords, :time_select => @time_select}, {:class => "chn"} %>
+  <% else %>
+    上一页
+  <% end %>
+  &nbsp;
+  <%= @activity.current_page %>
+  &nbsp;
+  <%if @activity &&  @page.to_i < @activity.total_pages then %>
+    <%= link_to "下一页", { :action => controller.action_name, :page => (@page.to_i + 1),:location => @act_location, :keywords => @keywords, :time_select => @time_select}, {:class => "chn"} %>
+  <% else %>
+    下一页
+  <% end %>
+</center></div>
 </div>
-<div id="friendlist"  >
+<div id="event_right">
+							<h2>
+								条件筛选
+							</h2>
 
-<h4>海盗好友</h4>
-<% @current_user.friend_ids.each do |friend| %>
-<% pp"---------------friend:#{friend.inspect}--------" %>
-<div>
-<%= link_to ml.name({"uid" => friend,"linked" => "false"}),:controller => :home,:action => :friend,:id => friend %>
-</div>
-<% end %>
-</div>
+							<form method="GET" id="time_select_form" name="time_select_form" action="/">
 
+								<input type="hidden" name="act_location" id="act_location"
+									value="<%= @act_location %>">
+                                      <input type="hidden" name="keywords" id="keywords"
+									value="<%= @keywords %>">
+                                      <input type="hidden" name="keywords" id="keywords"
+									value="<%= @keywords %>">
+								<label>
+									活动时间：
+								</label>
+								<select onchange="chgunivright()" name="time_select" id="time_select"
+									class="inputtext">
+
+									<option 
+										value="7">
+										一周内
+									</option>
+									<option  value="31"  <% if @time_select.to_i == 31 -%>selected="selected"<% end -%> >
+										一个月内
+									</option>
+									<option  value="93" <% if @time_select.to_i == 93 %>selected="selected"<% end %> >
+										三个月内
+									</option>
+
+								</select>
+							</form>
+						</div>
 </div>

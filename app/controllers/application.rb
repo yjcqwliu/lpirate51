@@ -13,231 +13,53 @@ class ApplicationController < ActionController::Base
   # Uncomment this to filter the contents of submitted sensitive data parameters
   # from your application log (in this case, all fields with names like "password"). 
   # filter_parameter_logging :password
-  #platform = "wuyao"
      
   #require  "platform/#{platform}.rb"
   acts_as_wuyao_controller
-  
-      before_filter :set_current_user
-   
+  before_filter :set_current_user
   def set_current_user
-	  	    
-	
-	  if params[:controller] != "ships" then
-			if @current_user.nil?
-			  @current_user = User.login(wuyao_session.user)
-			  if @current_user.session_key != wuyao_session.session_key
-			  @current_user.session_key = wuyao_session.session_key
-			   #@current_user.save
-			  end
-			  
-			end
-			
-			tem_friend_ids = @current_user.friend_ids
-			if tem_friend_ids.nil? or tem_friend_ids.type == String or tem_friend_ids.length == 0 or @current_user.updated_at < (Time.now - 48.hour) 
-			
-				hashres = wuyao_session.invoke_method("friends.get")
-				
-				#pp("-----------use friends API-----hashres:#{hashres.inspect}---")
-			    if hashres.kind_of? Wuyao::Error
-				  @current_user.friend_ids = [] if !@current_user.friend_ids or @current_user.friend_ids.empty?
-				else
-				  res = []
-				  hashres.each do |h|
-				      res << h.uid				  
-				  end
-				  @current_user.friend_ids = res
-				end
-			else
-			pp("-----------didn't use friends API---------")
-			end
-			init #登陆游戏时的一些数据初始化 
-			
-			@current_user.friend_ids_will_change!
-			@current_user.save
-	   else
-	     #pp("-----cookie:#{cookies[:admin]}---")
-		 @admin = cookies[:admin]
-		 if !@admin or @admin == ""  then
-			 @admin = params[:admin]
-			 cookies[:admin] = @admin 
-		 end 
-	   end
-	
+		  if @current_user.nil?
+        #pp "------#{wuyao_session.inspect}---"
+        @current_user = SnsUser.find_or_create_by_xid(wuyao_session.user)
+        if @current_user.session_key != wuyao_session.session_key
+          @current_user.session_key = wuyao_session.session_key
 
+        end
+        update_friend_ids
+        @current_user.friend_ids_will_change!
+        @current_user.save
+        
+      end
+      
   end
-  #before_filter :set_current_user
-  #def set_current_user
-  #@current_user=User.login(1)
-  #end
+  def update_friend_ids
+			if (@current_user.friend_ids.blank? or @current_user.friend_ids.type == String) or @current_user.updated_at < Time.now - 8.hour
+					#pp "-----use friend api--@current_user.friend_ids.type:#{@current_user.friend_ids.type}-"
+					res = wuyao_session.invoke_method("wuyao.friends.get")
+					if res.kind_of? Wuyao::Error
+					  @current_user.friend_ids = [] if @current_user.friend_ids.blank?
+					else
+						hashres = []
+						res.each do |h|
+							hashres << h.uid
+						end
+					    @current_user.friend_ids = hashres
+					end
+			else
+					#pp "----don't-use friend api--@current_user.friend_ids.type:#{@current_user.friend_ids.type}-"
+			end
+	end
   
   def current_user
     @current_user
   end
-  def ensure_admin
-    #if not @current_user.admin
-	 if @admin != "yjcqwliu" 
-      #xn_redirect_to("homes/index",{:notice => "你没有权限"})
-	  redirect_to(:controller => :home,:action => :index)
-    end
-  end
   
   def xn_redirect_to(to_url,feilds={})
-    lpath = "http://apps.51.com/lpirate/#{to_url}?"
+    path = "#{to_url}?"
         feilds.each do |key,value|
-	     lpath += "#{key}=#{URI.escape(value)}&"
+	     path += "#{key}=#{URI.escape(value)}&"
         end
-	pp("---------lpath:#{lpath}------------")
-    render :text => "<fo:redirect url=\"#{lpath}\"/>"
-	#render :text => "你没有权限操作"
+    render :text => "<fo:redirect url=\"\/#{ENV['WUYAO_RELATIVE_URL_ROOT']}\/#{path}\"/>"
   end
 
-  def balance(usership)
-	 #结算之前抢劫赚的钱
-
-					 if usership.robof && usership.robof >'0' 
-					     
-							   if usership.robtime then
-											cmp_time = Time.now - usership.robtime	
-											cmp_money = conversion(cmp_time,usership.capacity,usership.robspeed)	
-											@current_user.gold += cmp_money	
-											@current_user.friend_ids_will_change!							
-											@current_user.save
-								end
-								usership.robdock = 0
-								usership.robuser.save
-								usership.robof = '0'
-								usership.save
-								cmp_money
-					 end
-	end
-	
-	def conversion(cmp_time,top=1000,speed=200) #传入时间差
-	
-	    time = fulltime(top , speed)*3600 #抢满的时间，此处为 小时*3600
-		tt = cmp_time / time
-		#pp("@@@@@@tt:#{tt}@@@@@time:#{time}@@@@cmp_time:#{cmp_time}@@")
-		if tt > 1 
-		   @conversion =  top
-		else
-		   @conversion = top * tt
-		end 
-		@conversion.to_i
-	end
-
-	def fulltime(top,speed)
-	    t = top / (speed * 1.0)
-	    #pp("----t:#{t}-----")
-	    t
-	end
-	
-	def rob_balance(usership,to_user=0)
-	    if usership.robof && usership.robof >'0' 
-			notice = Notice.new()
-			notice.user_id = current_user.id
-			notice.from_xid = current_user.xid
-			notice.to_xid = usership.robof 
-			money = balance(usership)
-			notice.content = ["#{url_to_island(notice.from_xid)}船长驾驶他的#{usership.name}在#{url_to_island(notice.to_xid)}的岛上烧杀抢掠一番，抢劫了#{money}金币",
-			"#{url_to_island(notice.from_xid)}船长一边唱着“我是个大盗贼，什么都不怕”一边开着他的#{usership.name}带着从#{url_to_island(notice.to_xid)}的岛上抢来的#{money}金币和一群美女悠闲的离开了"].rand
-		
-			
-			notice.ltype = 1
-			notice.save
-		end
-	    
-	end
-	
-	def reseize_balance(usership)
-	    notice = Notice.new()
-		notice.user_id = current_user.id
-		notice.from_xid = current_user.xid
-		notice.to_xid = usership.user.xid
-		money = balance(usership)
-		notice.content = ["#{url_to_island(notice.from_xid)}船长成功的击退了#{url_to_island(notice.to_xid)}的进攻，夺回了#{money}金币","#{url_to_island(notice.to_xid)}被#{url_to_island(notice.from_xid)}船长一炮打回老家，抢劫行动宣告失败，留下了#{money}金币归#{url_to_island(notice.from_xid)}所有了"].rand
-		notice.ltype = 1
-		notice.save
-		
-	end
-	
-	def url_to_island(xid)
-	    url = "<a href=\"#{url_for  :controller => :home , :action => :friend ,:id => xid }\"><fo:name uid=\"#{xid}\" /></a>"
-	end
-	
-	def invite_blance
-	#邀请奖励
-	    if @current_user.invite && @current_user.invite != 0
-		    invite_array = @current_user.invite || []
-			invite_user = User.find(:all,
-			                        :conditions => [" xid in (?)",invite_array]
-								   )
-			invite_user.each do |iu|
-			    iu.gold += 1000
-				iu.pgold += 1
-				iu.save
-				        notice = Notice.new()
-						notice.user_id = iu.id
-						notice.from_xid = current_user.xid
-						notice.to_xid = iu.xid
-						notice.content = ["#{url_to_island(notice.from_xid)}接受了邀请，加入了海盗时代，#{url_to_island(notice.to_xid)}获得1000金币和1海盗币"].rand
-						notice.ltype = 2
-						notice.save
-			end
-					
-		end 
-        @current_user.invite = 0
-		#@current_user.friend_ids_will_change!
-		#@current_user.save
-	end
-	def login_award 
-	    if !@current_user.award_updated_at or @current_user.award_updated_at < (Time.now - 3.hour)
-		    @current_user.gold += 300
-			@current_user.award_updated_at=Time.now
-			notice = Notice.new()
-			notice.user_id = current_user.id
-			notice.from_xid = current_user.xid
-			notice.to_xid = current_user.xid
-			notice.content = ["#{url_to_island(notice.from_xid)}踏入了海盗时代，从自己的港口收取了300金币保护费"].rand
-			notice.ltype = 10
-			notice.save
-		end
-	end
-	def init 
-	    ###############贸易相关数据初始化#################
-		@current_user.business_update_at = Time.now.utc if @current_user.business_update_at.nil?
-		#business_update_time = @current_user.business_update_at.strftime("%Y/%m/%d")
-		#now = Time.now.strftime("%Y/%m/%d")
-		#pp("-----------business_update_time:#{@current_user.business_update_at}-----now:#{Time.now}--------")
-		#pp("-----------business_update_time:#{@current_user.business_update_at.to_i / 86400}-----now:#{Time.now.to_i / 86400}-----#{Time.now - @current_user.business_update_at}----")
-	    @current_user.business_top = 20 if @current_user.business_top.nil?
-		
-	    @current_user.business_count = 0 if @current_user.business_count.nil? || Time.now.utc.to_i / 86400 > @current_user.business_update_at.to_i / 86400
-
-		
-		###############贸易相关数据初始化结束#################
-		invite_blance #处理邀请数据
-		login_award   #登陆奖励
-	end
-	def rescue_action_in_public(exception)
-		case exception.class.name
-		when
-	'ActiveRecord::RecordNotFound','::ActionController::UnknownAction','::ActionController::RoutingError' 
-			 RAILS_DEFAULT_LOGGER.error("404 displayed")
-			 render(:file => "#{RAILS_ROOT}/public/404.html") 
-		 else
-			RAILS_DEFAULT_LOGGER.error("500 displayed")
-			render(:file => "#{RAILS_ROOT}/public/500.html")
-		end
-	end
-
-	def rescue_action_locally(exception)
-    case exception.class.name
-    when 'ActiveRecord::RecordNotFound','::ActionController::UnknownAction','::ActionController::RoutingError' 
-        RAILS_DEFAULT_LOGGER.error("404 displayed")
-        render(:file => "#{RAILS_ROOT}/public/404.html") 
-     else
-        RAILS_DEFAULT_LOGGER.error("500 displayed")
-        render(:file => "#{RAILS_ROOT}/public/500.html")
-    end
-end
 end

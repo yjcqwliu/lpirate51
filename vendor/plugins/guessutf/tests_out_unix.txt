@@ -1,0 +1,31 @@
+E:\ruby_forge\guessutf>ruby -v
+ruby 1.8.6 (2007-03-13 patchlevel 0) [i386-mswin32]
+
+E:\ruby_forge\guessutf>ruby test/tc_exception_ruby18.rb
+Loaded suite test/tc_exception_ruby18
+Started
+.
+Finished in 0.01 seconds.
+
+1 tests, 1 assertions, 0 failures, 0 errors
+
+E:\ruby_forge\guessutf>ruby19 -v
+ruby 1.9.0 (2007-11-01 patchlevel 0) [i386-mingw32]
+
+E:\ruby_forge\guessutf>ruby19 test/tc_exception_ruby18.rb
+Loaded suite test/tc_exception_ruby18
+Started
+.
+Finished in 0.01 seconds.
+
+1 tests, 1 assertions, 0 failures, 0 errors
+
+E:\ruby_forge\guessutf>ruby19 test/ts_guess_utf.rb
+Loaded suite test/ts_guess_utf
+Started
+................
+Finished in 0.02 seconds.
+
+16 tests, 159 assertions, 0 failures, 0 errors
+
+E:\ruby_forge\guessutf>

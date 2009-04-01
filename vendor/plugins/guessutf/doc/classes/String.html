@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <title>Class: String</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <link rel="stylesheet" href=".././rdoc-style.css" type="text/css" media="screen" />
+  <script type="text/javascript">
+  // <![CDATA[
+
+  function popupCode( url ) {
+    window.open(url, "Code", "resizable=yes,scrollbars=yes,toolbar=no,status=no,height=150,width=400")
+  }
+
+  function toggleCode( id ) {
+    if ( document.getElementById )
+      elem = document.getElementById( id );
+    else if ( document.all )
+      elem = eval( "document.all." + id );
+    else
+      return false;
+
+    elemStyle = elem.style;
+    
+    if ( elemStyle.display != "block" ) {
+      elemStyle.display = "block"
+    } else {
+      elemStyle.display = "none"
+    }
+
+    return true;
+  }
+  
+  // Make codeblocks hidden by default
+  document.writeln( "<style type=\"text/css\">div.method-source-code { display: none }</style>" )
+  
+  // ]]>
+  </script>
+
+</head>
+<body>
+
+
+
+    <div id="classHeader">
+        <table class="header-table">
+        <tr class="top-aligned-row">
+          <td><strong>Class</strong></td>
+          <td class="class-name-in-header">String</td>
+        </tr>
+        <tr class="top-aligned-row">
+            <td><strong>In:</strong></td>
+            <td>
+                <a href="../files/guess_utf_rb.html">
+                guess_utf.rb
+                </a>
+        <br />
+            </td>
+        </tr>
+
+        <tr class="top-aligned-row">
+            <td><strong>Parent:</strong></td>
+            <td>
+                Object
+            </td>
+        </tr>
+        </table>
+    </div>
+  <!-- banner header -->
+
+  <div id="bodyContent">
+
+
+
+  <div id="contextContent">
+
+    <div id="description">
+      <p>
+Version 1.0.0 (Last modified November, 4th, 2007)
+</p>
+<p>
+Author: Wolfgang Nadasi-Donner
+</p>
+<p>
+License: Ruby license
+</p>
+<p>
+This source code is provided as is by Wolfgang Nadasi-Donner. No claims are
+made as to fitness for any particular purpose. No warranties of any kind
+are expressed or implied.
+</p>
+<p>
+Copyright 2007 Wolfgang Nadasi-Donner
+</p>
+<p>
+(first &#8216;a&#8217; in &#8216;Nadasi&#8217; is letter [LATIN SMALL
+LETTER A WITH ACUTE])
+</p>
+
+    </div>
+
+
+   </div>
+
+    <div id="method-list">
+      <h3 class="section-bar">Methods</h3>
+
+      <div class="name-list">
+      <a href="#M000004">add_utf8_bom</a>&nbsp;&nbsp;
+      <a href="#M000005">add_utf8_bom!</a>&nbsp;&nbsp;
+      <a href="#M000001">check_bom</a>&nbsp;&nbsp;
+      <a href="#M000006">check_utf8_encoding</a>&nbsp;&nbsp;
+      <a href="#M000002">remove_utf8_bom</a>&nbsp;&nbsp;
+      <a href="#M000003">remove_utf8_bom!</a>&nbsp;&nbsp;
+      </div>
+    </div>
+
+  </div>
+
+
+    <!-- if includes -->
+
+    <div id="section">
+
+
+
+
+
+      
+
+
+    <!-- if method_list -->
+    <div id="methods">
+      <h3 class="section-bar">Public Instance methods</h3>
+
+      <div id="method-M000004" class="method-detail">
+        <a name="M000004"></a>
+
+        <div class="method-heading">
+          <a href="String.src/M000004.html" target="Code" class="method-signature"
+            onclick="popupCode('String.src/M000004.html');return false;">
+          <span class="method-name">add_utf8_bom</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<em><a href="String.html#M000004">add_utf8_bom</a></em> returns a copy of
+<b>self</b> with an added utf-8-BOM, if the encoding is utf-8. Otherwise an
+unmodified copy of <b>self</b> will be returned.
+</p>
+<p>
+The <a href="String.html">String</a> object <b>self</b> must be a
+well-formed utf-8 encoded <a href="String.html">String</a> object.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000005" class="method-detail">
+        <a name="M000005"></a>
+
+        <div class="method-heading">
+          <a href="String.src/M000005.html" target="Code" class="method-signature"
+            onclick="popupCode('String.src/M000005.html');return false;">
+          <span class="method-name">add_utf8_bom!</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<em><a href="String.html#M000005">add_utf8_bom!</a></em> returns
+<b>self</b> with an added utf-8-BOM, if the encoding is utf-8. Otherwise
+<b>nil</b> will be returned.
+</p>
+<p>
+The <a href="String.html">String</a> object <b>self</b> must be a
+well-formed utf-8 encoded <a href="String.html">String</a> object.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000001" class="method-detail">
+        <a name="M000001"></a>
+
+        <div class="method-heading">
+          <a href="String.src/M000001.html" target="Code" class="method-signature"
+            onclick="popupCode('String.src/M000001.html');return false;">
+          <span class="method-name">check_bom</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+Tests the first bytes of a <a href="String.html">String</a> object for the
+occurence of one of the <em>Unicode Byte Order Marks (BOM)</em>.
+</p>
+<hr size="1"></hr><p>
+<em><a href="String.html#M000001">check_bom</a></em> has the following
+return values:
+</p>
+<table>
+<tr><td valign="top"><b>nil</b>:</td><td>no BOM recognized
+
+</td></tr>
+<tr><td valign="top">&#8216;utf-8&#8217;:</td><td>UTF-8 BOM recognized
+
+</td></tr>
+<tr><td valign="top">&#8216;utf-16le&#8217;:</td><td>UTF-16LE BOM recognized
+
+</td></tr>
+<tr><td valign="top">&#8216;utf-16be&#8217;:</td><td>UTF-16BE BOM recognized
+
+</td></tr>
+<tr><td valign="top">&#8216;utf-32le&#8217;:</td><td>UTF-32LE BOM recognized (or UTF-16LE with 0x0000 after BOM)
+
+</td></tr>
+<tr><td valign="top">&#8216;utf-32be&#8217;:</td><td>UTF-32BE BOM recognized
+
+</td></tr>
+</table>
+        </div>
+      </div>
+
+      <div id="method-M000006" class="method-detail">
+        <a name="M000006"></a>
+
+        <div class="method-heading">
+          <a href="String.src/M000006.html" target="Code" class="method-signature"
+            onclick="popupCode('String.src/M000006.html');return false;">
+          <span class="method-name">check_utf8_encoding</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<em><a href="String.html#M000006">check_utf8_encoding</a></em> checks
+<b>self</b> completely on basis of the identical Tables <em>Table 3-7.
+Well-Formed UTF-8 Byte Sequences</em> (Unicode 5.0), or <em>Table 3-6.
+Well-Formed UTF-8 Byte Sequences</em> (Unicode 4.0).
+</p>
+<p>
+The method returns <b>nil</b> if the encoding of <b>self</b> isn&#8216;t
+utf-8 or if the contents of <b>self</b> doesn&#8216;t follow the rules
+described in the Unicode tables.
+</p>
+<p>
+If the check succeeds, the number of recognized utf-8 characters (Unicode
+codepoints) will be returned (this may include a BOM if present).
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000002" class="method-detail">
+        <a name="M000002"></a>
+
+        <div class="method-heading">
+          <a href="String.src/M000002.html" target="Code" class="method-signature"
+            onclick="popupCode('String.src/M000002.html');return false;">
+          <span class="method-name">remove_utf8_bom</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<em><a href="String.html#M000002">remove_utf8_bom</a></em> returns a copy
+of <b>self</b> without a leading utf-8-BOM, if the encoding is utf-8 and
+<b>self</b> starts with an utf-8-BOM. Otherwise a copy of <b>self</b> will
+be returned.
+</p>
+<p>
+The <a href="String.html">String</a> object <b>self</b> must be a
+well-formed utf-8 encoded <a href="String.html">String</a> object.
+</p>
+        </div>
+      </div>
+
+      <div id="method-M000003" class="method-detail">
+        <a name="M000003"></a>
+
+        <div class="method-heading">
+          <a href="String.src/M000003.html" target="Code" class="method-signature"
+            onclick="popupCode('String.src/M000003.html');return false;">
+          <span class="method-name">remove_utf8_bom!</span><span class="method-args">()</span>
+          </a>
+        </div>
+      
+        <div class="method-description">
+          <p>
+<em><a href="String.html#M000003">remove_utf8_bom!</a></em> removes a
+leading _utf-8-BOM_ from <b>self</b>, if the encoding is utf-8 and
+<b>self</b> starts with an utf-8-BOM.
+</p>
+<p>
+If an utf-8-BOM was removed, it is the return value. Otherwise <b>nil</b>
+will be returned.
+</p>
+<p>
+The <a href="String.html">String</a> object <b>self</b> must be a
+well-formed utf-8 encoded <a href="String.html">String</a> object.
+</p>
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+<div id="validator-badges">
+  <p><small><a href="http://validator.w3.org/check/referer">[Validate]</a></small></p>
+</div>
+
+</body>
+</html>

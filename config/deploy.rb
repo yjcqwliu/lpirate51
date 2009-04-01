@@ -1,10 +1,10 @@
 require 'mongrel_cluster/recipes'
 
-set :application, "lpirate51"
-set :scm, "git"
-set :repository,  "git@github.com:yjcqwliu/lpirate51.git"
+set :application, "xuanjianghui"
+set :scm, "?"
+set :repository,  "?"
 set :branch, "master"
-set :user, "lpirate51"
+set :user, "?"
 set :use_sudo, false
 set :mongrel_conf, "#{current_path}/config/mongrel_cluster.yml"
 
@@ -18,11 +18,11 @@ set :mongrel_conf, "#{current_path}/config/mongrel_cluster.yml"
 # your SCM below:
 # set :scm, :subversion
 
-role :app, "58.215.65.224"
-role :web, "58.215.65.224"
-role :db,  "58.215.65.224", :primary => true
+role :app, "?"
+role :web, "?"
+role :db,  "?", :primary => true
 
 task :after_update_code do 
   run "cp #{current_release}/config/database.yml.production #{current_release}/config/database.yml"
-  run "cp #{current_release}/config/wuyao.yml.production #{current_release}/config/wuyao.yml"
+  run "cp #{current_release}/config/xiaonei.yml.production #{current_release}/config/xiaonei.yml"
 end

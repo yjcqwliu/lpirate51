@@ -53,8 +53,9 @@ module Wuyao
       
       pp("wuyao_params = #{wuyao_params.inspect}") if DEBUG
 
-      Parse.new.process(Service.new.post(wuyao_params).body)
+      Parse.new.process(Service2.new.post(wuyao_params).body)
     end
     
   end
+
 end

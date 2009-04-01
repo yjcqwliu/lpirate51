@@ -40,7 +40,7 @@ Rails::Initializer.run do |config|
 
   # Make Time.zone default to the specified zone, and make Active Record store time values
   # in the database in UTC, and return them converted to the specified local zone.
-  # Run "rake -D time" for a list of tasks for finding time zone names. Uncomment to use default local time.
+  # Run "rake -D time" for a list of tasks for finding time zone names. Comment line to use default local time.
   config.time_zone = 'UTC'
 
   # Your secret key for verifying cookie session data integrity.
@@ -48,8 +48,8 @@ Rails::Initializer.run do |config|
   # Make sure the secret is at least 30 characters and all random, 
   # no regular words or you'll be exposed to dictionary attacks.
   config.action_controller.session = {
-    :session_key => '_lpirate_session',
-    :secret      => '182f6f7a11927b429588144825d5ba89ca19debeb91ac521452c3294bd9d8748229e3bb7ac54e7091918cfe4469a0fadfde6ad71a70974f5a178a85c15a80694'
+    :session_key => '_xuanjianghui_session',
+    :secret      => '08ec9f33de531a8ea8518289f7d164be7bd3358fc599d8e3ae0c0e243f6f11f9b3959393c364970eac770f8691d364e74daed68d74d717b0e6d709d91344b52d'
   }
 
   # Use the database for sessions instead of the cookie-based default,
